@@ -36,5 +36,29 @@ export const useMediaStreams = () => {
     loadStreams()
   }, [loadStreams])
 
+  // Listen for storage changes to auto-update the list
+  useEffect(() => {
+    if (!currentTabId) return
+
+    const handleStorageChange = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      areaName: string
+    ) => {
+      if (areaName === "local") {
+        const storageKey = `media_streams_${currentTabId}`
+        if (changes[storageKey]) {
+          const newStreams = changes[storageKey].newValue || []
+          setStreams(newStreams)
+        }
+      }
+    }
+
+    chrome.storage.onChanged.addListener(handleStorageChange)
+
+    return () => {
+      chrome.storage.onChanged.removeListener(handleStorageChange)
+    }
+  }, [currentTabId])
+
   return { streams, loading, currentTabId, reload: loadStreams }
 }
