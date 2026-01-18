@@ -1,0 +1,21 @@
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.header-icon {
+  width: 20px;
+  height: 20px;
+  color: #2563eb;
+}
+
+.header-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
