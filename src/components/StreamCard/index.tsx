@@ -3,15 +3,8 @@ import { Check, Copy, Film } from "lucide-react"
 
 import { useClipboard } from "../../hooks/useClipboard"
 import { formatTimestamp, getFileExtension } from "../../lib/utils"
-import type { MediaStream } from "../../types"
-import "./style.css"
-
-import { Button } from "@base-ui/react/button"
-import { Check, Copy, Film } from "lucide-react"
-
-import { useClipboard } from "../../hooks/useClipboard"
-import { formatTimestamp, getFileExtension } from "../../lib/utils"
 import type { MediaStream, UserSettings } from "../../types"
+
 import "./style.css"
 
 interface StreamCardProps {
@@ -25,12 +18,12 @@ export function StreamCard({ stream, settings }: StreamCardProps) {
 
   const handleCopy = () => {
     let command = `shiori dl "${stream.url}"`
-    
+
     // Optional settings - only append if different from CLI defaults or explicitly enabled
     if (settings.concurrency && settings.concurrency !== 5) {
       command += ` --concurrency ${settings.concurrency}`
     }
-    
+
     if (settings.timeout && settings.timeout !== 10) {
       command += ` --timeout ${settings.timeout}`
     }
@@ -47,12 +40,30 @@ export function StreamCard({ stream, settings }: StreamCardProps) {
       command += ` --in-memory-cache`
     }
 
-    if (settings.userAgent && settings.userAgent.trim().length > 0) {
+    // Handle User Agent: Plugin metadata > Settings > Default
+    const metadataUA = stream.metadata?.userAgent
+    const settingsUA = settings.userAgent
+
+    if (metadataUA) {
+      const safeUA = metadataUA.replace(/"/g, '\\"')
+      command += ` -H "User-Agent: ${safeUA}"`
+    } else if (settingsUA && settingsUA.trim().length > 0) {
       // Escape double quotes in user agent just in case
-      const safeUA = settings.userAgent.replace(/"/g, '\\"')
+      const safeUA = settingsUA.replace(/"/g, '\\"')
       command += ` -H "User-Agent: ${safeUA}"`
     }
-    
+
+    // Handle Output Filename from Metadata
+    if (stream.metadata?.title) {
+      // Simple sanitization to prevent command injection or invalid filenames
+      const safeTitle = stream.metadata.title
+        .replace(/[\\/:*?"<>|\r\n]/g, "_")
+        .trim()
+      if (safeTitle.length > 0) {
+        command += ` --output "${safeTitle}"`
+      }
+    }
+
     copy(command)
   }
 

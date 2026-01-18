@@ -1,3 +1,5 @@
+import type { StreamMetadata } from "./plugins/types"
+
 // Background Service Worker for media stream sniffing
 export {}
 
@@ -5,6 +7,7 @@ export {}
 interface MediaStream {
   url: string
   timestamp: number
+  metadata?: StreamMetadata
 }
 
 interface StorageData {
@@ -40,7 +43,11 @@ function getStorageKey(tabId: number): string {
 /**
  * Save media stream URL to storage
  */
-async function saveMediaStream(tabId: number, url: string): Promise<void> {
+async function saveMediaStream(
+  tabId: number,
+  url: string,
+  metadata?: StreamMetadata
+): Promise<void> {
   if (tabId < 0) return // Ignore invalid tab IDs
 
   const storageKey = getStorageKey(tabId)
@@ -56,7 +63,8 @@ async function saveMediaStream(tabId: number, url: string): Promise<void> {
     if (!urlExists) {
       const newStream: MediaStream = {
         url,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        metadata
       }
 
       existingStreams.push(newStream)
@@ -134,7 +142,12 @@ chrome.runtime.onInstalled.addListener(cleanStaleData)
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (message.type === "SAVE_MEDIA_STREAM" && message.url && sender.tab?.id) {
-    saveMediaStream(sender.tab.id, message.url)
+    console.log(
+      `[Media Sniffer] Received stream URL from tab ${sender.tab.id}:`,
+      message.url,
+      message.metadata
+    )
+    saveMediaStream(sender.tab.id, message.url, message.metadata)
   }
 })
 
@@ -145,7 +158,23 @@ chrome.webRequest.onBeforeRequest.addListener(
 
     // Check if this is a media stream URL
     if (isMediaStream(url)) {
-      saveMediaStream(tabId, url)
+      // Attempt to fetch metadata from the tab before saving
+      // Using a small timeout because the tab might be loading or content script not ready
+      const tryFetchMetadata = async () => {
+        try {
+          const response = await chrome.tabs.sendMessage<any, StreamMetadata>(
+            tabId,
+            { type: "EXTRACT_METADATA" }
+          )
+          return response
+        } catch {
+          return undefined
+        }
+      }
+
+      tryFetchMetadata().then((metadata) => {
+        saveMediaStream(tabId, url, metadata)
+      })
     }
   },
   {

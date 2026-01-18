@@ -1,6 +1,7 @@
 export interface MediaStream {
-  url: string;
-  timestamp: number;
+  url: string
+  timestamp: number
+  metadata?: import("../plugins/types").StreamMetadata
 }
 
 export interface UserSettings {
