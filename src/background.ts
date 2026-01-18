@@ -23,8 +23,8 @@ function isMediaStream(url: string): boolean {
     const urlObj = new URL(url)
     const pathname = urlObj.pathname.toLowerCase()
     
-    // Check for .m3u8 or .mpd extensions
-    return pathname.endsWith(".m3u8") || pathname.endsWith(".mpd")
+    // Check for .mpd extensions (m3u8 is handled via content script interception)
+    return pathname.endsWith(".mpd")
   } catch {
     return false
   }
@@ -86,6 +86,13 @@ async function clearTabStreams(tabId: number): Promise<void> {
     console.error("[Media Sniffer] Error clearing streams:", error)
   }
 }
+
+// Listen for messages from content script
+chrome.runtime.onMessage.addListener((message, sender) => {
+  if (message.type === "SAVE_MEDIA_STREAM" && message.url && sender.tab?.id) {
+    saveMediaStream(sender.tab.id, message.url)
+  }
+})
 
 // Listen to web requests for media streams
 chrome.webRequest.onBeforeRequest.addListener(
