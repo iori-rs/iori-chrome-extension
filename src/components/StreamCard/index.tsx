@@ -1,10 +1,10 @@
 import { Button } from "@base-ui/react/button"
 import { Check, Copy, Film } from "lucide-react"
 
-import { useClipboard } from "../hooks/useClipboard"
-import { formatTimestamp, getFileExtension } from "../lib/utils"
-import type { MediaStream } from "../types"
-import "./StreamCard.css"
+import { useClipboard } from "../../hooks/useClipboard"
+import { formatTimestamp, getFileExtension } from "../../lib/utils"
+import type { MediaStream } from "../../types"
+import "./style.css"
 
 interface StreamCardProps {
   stream: MediaStream

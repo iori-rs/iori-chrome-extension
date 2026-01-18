@@ -1,5 +1,5 @@
 import { VideoOff } from "lucide-react"
-import "./EmptyState.css"
+import "./style.css"
 
 export function EmptyState() {
   return (

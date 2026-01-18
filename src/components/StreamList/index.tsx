@@ -1,6 +1,6 @@
-import { StreamCard } from "./StreamCard"
-import type { MediaStream } from "../types"
-import "./StreamList.css"
+import { StreamCard } from "../StreamCard"
+import type { MediaStream } from "../../types"
+import "./style.css"
 
 interface StreamListProps {
   streams: MediaStream[]

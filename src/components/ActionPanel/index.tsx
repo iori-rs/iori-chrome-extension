@@ -1,6 +1,6 @@
 import { Button } from "@base-ui/react/button"
 import { RotateCw } from "lucide-react"
-import "./ActionPanel.css"
+import "./style.css"
 
 interface ActionPanelProps {
   count: number
