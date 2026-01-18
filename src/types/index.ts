@@ -5,4 +5,9 @@ export interface MediaStream {
 
 export interface UserSettings {
   concurrency?: number;
+  timeout?: number;
+  segmentRetries?: number;
+  inMemoryCache?: boolean;
+  noMerge?: boolean;
+  userAgent?: string;
 }

@@ -25,9 +25,34 @@ export function StreamCard({ stream, settings }: StreamCardProps) {
 
   const handleCopy = () => {
     let command = `shiori dl "${stream.url}"`
-    if (settings.concurrency) {
+    
+    // Optional settings - only append if different from CLI defaults or explicitly enabled
+    if (settings.concurrency && settings.concurrency !== 5) {
       command += ` --concurrency ${settings.concurrency}`
     }
+    
+    if (settings.timeout && settings.timeout !== 10) {
+      command += ` --timeout ${settings.timeout}`
+    }
+
+    if (settings.segmentRetries && settings.segmentRetries !== 5) {
+      command += ` --segment-retries ${settings.segmentRetries}`
+    }
+
+    if (settings.noMerge) {
+      command += ` --no-merge`
+    }
+
+    if (settings.inMemoryCache) {
+      command += ` --in-memory-cache`
+    }
+
+    if (settings.userAgent && settings.userAgent.trim().length > 0) {
+      // Escape double quotes in user agent just in case
+      const safeUA = settings.userAgent.replace(/"/g, '\\"')
+      command += ` -H "User-Agent: ${safeUA}"`
+    }
+    
     copy(command)
   }
 

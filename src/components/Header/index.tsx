@@ -1,5 +1,6 @@
-import { Radio, Settings } from "lucide-react"
 import { Button } from "@base-ui/react/button"
+import { Settings } from "lucide-react"
+
 import "./style.css"
 
 interface HeaderProps {
@@ -14,8 +15,7 @@ export function Header({
   return (
     <header className="popup-header">
       <div className="header-left">
-        <Radio className="header-icon" />
-        <h2 className="header-title">流媒体嗅探器</h2>
+        <h2 className="header-title">IORI</h2>
       </div>
       {showSettingsButton && (
         <Button onClick={onSettingsClick} className="settings-button">

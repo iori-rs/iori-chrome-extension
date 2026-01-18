@@ -5,7 +5,12 @@ import type { UserSettings } from "../types"
 const STORAGE_KEY = "iori_settings"
 
 const DEFAULT_SETTINGS: UserSettings = {
-  concurrency: 5 // default value
+  concurrency: 5,
+  timeout: 10,
+  segmentRetries: 5,
+  inMemoryCache: false,
+  noMerge: false,
+  userAgent: ""
 }
 
 export function useSettings() {
