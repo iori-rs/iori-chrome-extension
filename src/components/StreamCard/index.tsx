@@ -33,7 +33,7 @@ export function StreamCard({ stream }: StreamCardProps) {
       </div>
 
       <Button
-        onClick={() => copy(stream.url)}
+        onClick={() => copy(`shiori dl "${stream.url}"`)}
         className={`copy-button ${copied ? "copied" : ""}`}>
         {copied ? (
           <>
@@ -41,7 +41,7 @@ export function StreamCard({ stream }: StreamCardProps) {
           </>
         ) : (
           <>
-            <Copy size={14} /> 复制链接
+            <Copy size={14} /> 复制命令
           </>
         )}
       </Button>
