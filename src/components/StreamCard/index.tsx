@@ -6,13 +6,30 @@ import { formatTimestamp, getFileExtension } from "../../lib/utils"
 import type { MediaStream } from "../../types"
 import "./style.css"
 
+import { Button } from "@base-ui/react/button"
+import { Check, Copy, Film } from "lucide-react"
+
+import { useClipboard } from "../../hooks/useClipboard"
+import { formatTimestamp, getFileExtension } from "../../lib/utils"
+import type { MediaStream, UserSettings } from "../../types"
+import "./style.css"
+
 interface StreamCardProps {
   stream: MediaStream
+  settings: UserSettings
 }
 
-export function StreamCard({ stream }: StreamCardProps) {
+export function StreamCard({ stream, settings }: StreamCardProps) {
   const { copied, copy } = useClipboard()
   const extension = getFileExtension(stream.url)
+
+  const handleCopy = () => {
+    let command = `shiori dl "${stream.url}"`
+    if (settings.concurrency) {
+      command += ` --concurrency ${settings.concurrency}`
+    }
+    copy(command)
+  }
 
   return (
     <div className="stream-card">
@@ -33,7 +50,7 @@ export function StreamCard({ stream }: StreamCardProps) {
       </div>
 
       <Button
-        onClick={() => copy(`shiori dl "${stream.url}"`)}
+        onClick={handleCopy}
         className={`copy-button ${copied ? "copied" : ""}`}>
         {copied ? (
           <>

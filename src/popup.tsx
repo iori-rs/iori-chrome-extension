@@ -1,18 +1,41 @@
+import { useState } from "react"
+
 import { ActionPanel } from "./components/ActionPanel"
 import { EmptyState } from "./components/EmptyState"
 import { Header } from "./components/Header"
+import { SettingsPanel } from "./components/SettingsPanel"
 import { StreamList } from "./components/StreamList"
 import { useMediaStreams } from "./hooks/useMediaStreams"
+import { useSettings } from "./hooks/useSettings"
+
 import "./popup.css"
 
 function IndexPopup() {
-  const { streams, loading, reload } = useMediaStreams()
+  const { streams, loading: streamsLoading, reload } = useMediaStreams()
+  const { settings, loading: settingsLoading, updateSettings } = useSettings()
+  const [view, setView] = useState<"list" | "settings">("list")
+
+  if (settingsLoading) {
+    return null // or a global loading state
+  }
+
+  if (view === "settings") {
+    return (
+      <div className="popup-container">
+        <SettingsPanel
+          settings={settings}
+          onUpdate={updateSettings}
+          onBack={() => setView("list")}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="popup-container">
-      <Header />
+      <Header onSettingsClick={() => setView("settings")} />
 
-      {loading ? (
+      {streamsLoading ? (
         <div className="loading-container">
           <div className="loader" />
           <span>正在扫描流媒体资源...</span>
@@ -22,7 +45,7 @@ function IndexPopup() {
       ) : (
         <>
           <ActionPanel count={streams.length} onRefresh={reload} />
-          <StreamList streams={streams} />
+          <StreamList streams={streams} settings={settings} />
         </>
       )}
     </div>
@@ -30,4 +53,3 @@ function IndexPopup() {
 }
 
 export default IndexPopup
-
