@@ -47,6 +47,7 @@ export interface MsgSaveMediaStream {
 
 export interface MsgExtractMetadata {
   type: "EXTRACT_METADATA"
+  url?: string
 }
 
 export type IoriRuntimeMessage = MsgSaveMediaStream | MsgExtractMetadata

@@ -158,7 +158,7 @@ chrome.webRequest.onBeforeRequest.addListener(
           const response = await chrome.tabs.sendMessage<
             IoriRuntimeMessage,
             StreamMetadata
-          >(tabId, { type: "EXTRACT_METADATA" })
+          >(tabId, { type: "EXTRACT_METADATA", url })
           return response
         } catch {
           return undefined

@@ -1,4 +1,5 @@
-import type { IoriPlugin, StreamMetadata } from "../types"
+import type { StreamMetadata } from "~src/types"
+import type { IoriPlugin } from "../types"
 
 export class OpenrecPlugin implements IoriPlugin {
   name = "Openrec Plugin"
@@ -8,7 +9,7 @@ export class OpenrecPlugin implements IoriPlugin {
     return pageUrl.includes("openrec.tv")
   }
 
-  async extractMetadata(): Promise<StreamMetadata> {
+  async extractMetadata(streamUrl?: string): Promise<StreamMetadata> {
     const metadata: StreamMetadata = {}
 
     const titleEl = document.querySelector("title")

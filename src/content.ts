@@ -15,12 +15,12 @@ export const config: PlasmoCSConfig = {
 }
 
 // Helper to extract metadata
-async function extractPageMetadata() {
+async function extractPageMetadata(streamUrl?: string) {
   const plugin = getPlugin(window.location.href)
   if (plugin) {
     try {
       console.log(`[IORI] Running plugin: ${plugin.name}`)
-      return await plugin.extractMetadata()
+      return await plugin.extractMetadata(streamUrl)
     } catch (e) {
       console.error("[IORI] Plugin execution failed:", e)
     }
@@ -35,7 +35,7 @@ async function extractPageMetadata() {
 chrome.runtime.onMessage.addListener(
   (message: IoriRuntimeMessage, sender, sendResponse) => {
     if (message.type === "EXTRACT_METADATA") {
-      extractPageMetadata().then((metadata) => {
+      extractPageMetadata(message.url).then((metadata) => {
         sendResponse(metadata)
       })
       return true // Keep channel open for async response
@@ -52,7 +52,7 @@ window.addEventListener("message", async (event) => {
   if (data?.type === "IORI_HLS_FOUND" && data?.url) {
     console.log("[IORI] Content script received HLS URL:", data.url)
 
-    const metadata = await extractPageMetadata()
+    const metadata = await extractPageMetadata(data.url)
 
     const msg: IoriRuntimeMessage = {
       type: "SAVE_MEDIA_STREAM",

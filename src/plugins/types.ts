@@ -17,5 +17,5 @@ export interface IoriPlugin {
    * Extract metadata from the current page content
    * This runs in the content script context (DOM access available)
    */
-  extractMetadata: () => Promise<StreamMetadata>
+  extractMetadata: (streamUrl?: string) => Promise<StreamMetadata>
 }
