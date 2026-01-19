@@ -4,7 +4,7 @@ import { Check, Copy, Film } from "lucide-react"
 import { useClipboard } from "../../hooks/useClipboard"
 import type { MediaStream, UserSettings } from "../../types"
 import { generateShioriCommand } from "../../utils/command"
-import { formatTimestamp, getFileExtension } from "../../utils/tool"
+import { getFileExtension } from "../../utils/tool"
 
 import "./style.css"
 
@@ -31,9 +31,7 @@ export function StreamCard({ stream, settings }: StreamCardProps) {
             {extension}
           </span>
         </div>
-        <span className="stream-timestamp">
-          {formatTimestamp(stream.timestamp)}
-        </span>
+        <span className="stream-title">{stream.metadata?.title || ""}</span>
       </div>
 
       <div className="stream-url" title={stream.url}>

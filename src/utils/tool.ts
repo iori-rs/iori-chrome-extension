@@ -9,8 +9,3 @@ export const getFileExtension = (url: string): string => {
     return "Unknown"
   }
 }
-
-export const formatTimestamp = (timestamp: number): string => {
-  const date = new Date(timestamp)
-  return date.toLocaleTimeString()
-}

@@ -16,7 +16,7 @@
 
 .stream-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -24,6 +24,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .stream-icon {
@@ -53,9 +54,11 @@
   color: #374151;
 }
 
-.stream-timestamp {
-  font-size: 0.75rem;
-  color: #9ca3af;
+.stream-title {
+  flex-grow: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .stream-url {

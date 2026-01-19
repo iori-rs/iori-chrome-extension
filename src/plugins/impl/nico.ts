@@ -12,6 +12,7 @@ export class NicoPlugin implements IoriPlugin {
 
   async process(streamUrl?: string): Promise<PluginExecuteResult> {
     const metadata: StreamMetadata = {}
+    const pageUrl = window.location.href.split("?")[0]
 
     const titleEl = document.querySelector(`h1[class^=___program-title]`)
 
@@ -35,6 +36,6 @@ export class NicoPlugin implements IoriPlugin {
       console.warn("[Nico Plugin] Failed to fetch session cookie", e)
     }
 
-    return { metadata }
+    return { metadata, rewrittenUrl: pageUrl }
   }
 }
