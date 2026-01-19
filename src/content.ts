@@ -1,5 +1,11 @@
 import type { PlasmoCSConfig } from "plasmo"
 
+import type {
+  IoriRuntimeMessage,
+  IoriWindowMessage,
+  StreamMetadata
+} from "~src/types"
+
 import { getPlugin } from "./plugins"
 
 export const config: PlasmoCSConfig = {
@@ -26,28 +32,34 @@ async function extractPageMetadata() {
 }
 
 // Listen for requests from background script (DASH detection logic triggers this)
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "EXTRACT_METADATA") {
-    extractPageMetadata().then((metadata) => {
-      sendResponse(metadata)
-    })
-    return true // Keep channel open for async response
+chrome.runtime.onMessage.addListener(
+  (message: IoriRuntimeMessage, sender, sendResponse) => {
+    if (message.type === "EXTRACT_METADATA") {
+      extractPageMetadata().then((metadata) => {
+        sendResponse(metadata)
+      })
+      return true // Keep channel open for async response
+    }
   }
-})
+)
 
 // Listen for messages from the injected script
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return
 
-  if (event.data?.type === "IORI_HLS_FOUND" && event.data?.url) {
-    console.log("[IORI] Content script received HLS URL:", event.data.url)
+  const data = event.data as IoriWindowMessage
+
+  if (data?.type === "IORI_HLS_FOUND" && data?.url) {
+    console.log("[IORI] Content script received HLS URL:", data.url)
 
     const metadata = await extractPageMetadata()
 
-    chrome.runtime.sendMessage({
+    const msg: IoriRuntimeMessage = {
       type: "SAVE_MEDIA_STREAM",
-      url: event.data.url,
+      url: data.url,
       metadata
-    })
+    }
+
+    chrome.runtime.sendMessage(msg)
   }
 })

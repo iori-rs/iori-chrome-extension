@@ -1,5 +1,7 @@
 import type { PlasmoCSConfig } from "plasmo"
 
+import type { IoriWindowMessage } from "~src/types"
+
 export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"],
   world: "MAIN",
@@ -28,7 +30,8 @@ window.fetch = async (...args) => {
       clone.text().then((content) => {
         if (isMasterPlaylist(content)) {
           console.log("[IORI] Found Master Playlist (Fetch):", url)
-          window.postMessage({ type: "IORI_HLS_FOUND", url }, "*")
+          const msg: IoriWindowMessage = { type: "IORI_HLS_FOUND", url }
+          window.postMessage(msg, "*")
         } else {
           console.log("[IORI] Ignored Segment/Other Playlist (Fetch):", url)
         }
@@ -60,7 +63,8 @@ XHR.send = function (body) {
       console.log("[IORI] Intercepted XHR for .m3u8:", url)
       if (this.responseText && isMasterPlaylist(this.responseText)) {
         console.log("[IORI] Found Master Playlist (XHR):", url)
-        window.postMessage({ type: "IORI_HLS_FOUND", url }, "*")
+        const msg: IoriWindowMessage = { type: "IORI_HLS_FOUND", url }
+        window.postMessage(msg, "*")
       } else {
         console.log("[IORI] Ignored Segment/Other Playlist (XHR):", url)
       }

@@ -1,14 +1,7 @@
-import type { StreamMetadata } from "./plugins/types"
+import type { IoriRuntimeMessage, MediaStream, StreamMetadata } from "./types"
 
 // Background Service Worker for media stream sniffing
 export {}
-
-// Types for our storage structure
-interface MediaStream {
-  url: string
-  timestamp: number
-  metadata?: StreamMetadata
-}
 
 interface StorageData {
   [tabId: string]: MediaStream[]
@@ -140,8 +133,8 @@ chrome.runtime.onStartup.addListener(cleanStaleData)
 chrome.runtime.onInstalled.addListener(cleanStaleData)
 
 // Listen for messages from content script
-chrome.runtime.onMessage.addListener((message, sender) => {
-  if (message.type === "SAVE_MEDIA_STREAM" && message.url && sender.tab?.id) {
+chrome.runtime.onMessage.addListener((message: IoriRuntimeMessage, sender) => {
+  if (message.type === "SAVE_MEDIA_STREAM" && sender.tab?.id) {
     console.log(
       `[Media Sniffer] Received stream URL from tab ${sender.tab.id}:`,
       message.url,
@@ -162,10 +155,10 @@ chrome.webRequest.onBeforeRequest.addListener(
       // Using a small timeout because the tab might be loading or content script not ready
       const tryFetchMetadata = async () => {
         try {
-          const response = await chrome.tabs.sendMessage<any, StreamMetadata>(
-            tabId,
-            { type: "EXTRACT_METADATA" }
-          )
+          const response = await chrome.tabs.sendMessage<
+            IoriRuntimeMessage,
+            StreamMetadata
+          >(tabId, { type: "EXTRACT_METADATA" })
           return response
         } catch {
           return undefined

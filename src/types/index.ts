@@ -23,3 +23,30 @@ export interface UserSettings {
   noMerge?: boolean
   userAgent?: string
 }
+
+// --- Message Types ---
+
+// 1. Window Messages (Main World -> Content Script)
+export type WindowMessageType = "IORI_HLS_FOUND"
+
+export interface WindowMessageHlsFound {
+  type: "IORI_HLS_FOUND"
+  url: string
+}
+
+export type IoriWindowMessage = WindowMessageHlsFound
+
+// 2. Extension Runtime Messages (Content Script <-> Background)
+export type RuntimeMessageType = "SAVE_MEDIA_STREAM" | "EXTRACT_METADATA"
+
+export interface MsgSaveMediaStream {
+  type: "SAVE_MEDIA_STREAM"
+  url: string
+  metadata?: StreamMetadata
+}
+
+export interface MsgExtractMetadata {
+  type: "EXTRACT_METADATA"
+}
+
+export type IoriRuntimeMessage = MsgSaveMediaStream | MsgExtractMetadata
