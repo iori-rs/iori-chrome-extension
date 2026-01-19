@@ -1,5 +1,10 @@
 import type { StreamMetadata } from "~src/types"
 
+export interface PluginExecuteResult {
+  metadata: StreamMetadata
+  rewrittenUrl?: string
+}
+
 export interface IoriPlugin {
   /**
    * Name of the plugin
@@ -14,8 +19,8 @@ export interface IoriPlugin {
    */
   match: (pageUrl: string) => boolean
   /**
-   * Extract metadata from the current page content
+   * Process the stream URL and extract metadata from the current page content
    * This runs in the content script context (DOM access available)
    */
-  extractMetadata: (streamUrl?: string) => Promise<StreamMetadata>
+  process: (streamUrl?: string) => Promise<PluginExecuteResult>
 }

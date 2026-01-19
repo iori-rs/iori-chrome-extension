@@ -1,6 +1,6 @@
 import type { MsgGetCookie, StreamMetadata } from "~src/types"
 
-import type { IoriPlugin } from "../types"
+import type { IoriPlugin, PluginExecuteResult } from "../types"
 
 export class NicoPlugin implements IoriPlugin {
   name = "Nico Plugin"
@@ -10,7 +10,7 @@ export class NicoPlugin implements IoriPlugin {
     return pageUrl.includes("live.nicovideo.jp")
   }
 
-  async extractMetadata(streamUrl?: string): Promise<StreamMetadata> {
+  async process(streamUrl?: string): Promise<PluginExecuteResult> {
     const metadata: StreamMetadata = {}
 
     const titleEl = document.querySelector(`h1[class^=___program-title]`)
@@ -35,6 +35,6 @@ export class NicoPlugin implements IoriPlugin {
       console.warn("[Nico Plugin] Failed to fetch session cookie", e)
     }
 
-    return metadata
+    return { metadata }
   }
 }

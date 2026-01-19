@@ -1,10 +1,7 @@
 import type { PlasmoCSConfig } from "plasmo"
 
-import type {
-  IoriRuntimeMessage,
-  IoriWindowMessage,
-  StreamMetadata
-} from "~src/types"
+import type { PluginExecuteResult } from "~src/plugins/types"
+import type { IoriRuntimeMessage, IoriWindowMessage } from "~src/types"
 
 import { getPlugin } from "./plugins"
 
@@ -14,20 +11,22 @@ export const config: PlasmoCSConfig = {
   run_at: "document_start"
 }
 
-// Helper to extract metadata
-async function extractPageMetadata(streamUrl?: string) {
+// Helper to execute plugin
+async function executePlugin(streamUrl?: string): Promise<PluginExecuteResult> {
   const plugin = getPlugin(window.location.href)
   if (plugin) {
     try {
       console.log(`[IORI] Running plugin: ${plugin.name}`)
-      return await plugin.extractMetadata(streamUrl)
+      return await plugin.process(streamUrl)
     } catch (e) {
       console.error("[IORI] Plugin execution failed:", e)
     }
   }
   // Default metadata extraction if no plugin matches
   return {
-    title: document.title
+    metadata: {
+      title: document.title
+    }
   }
 }
 
@@ -35,8 +34,8 @@ async function extractPageMetadata(streamUrl?: string) {
 chrome.runtime.onMessage.addListener(
   (message: IoriRuntimeMessage, sender, sendResponse) => {
     if (message.type === "EXTRACT_METADATA") {
-      extractPageMetadata(message.url).then((metadata) => {
-        sendResponse(metadata)
+      executePlugin(message.url).then((result) => {
+        sendResponse(result)
       })
       return true // Keep channel open for async response
     }
@@ -52,12 +51,12 @@ window.addEventListener("message", async (event) => {
   if (data?.type === "IORI_HLS_FOUND" && data?.url) {
     console.log("[IORI] Content script received HLS URL:", data.url)
 
-    const metadata = await extractPageMetadata(data.url)
+    const result = await executePlugin(data.url)
 
     const msg: IoriRuntimeMessage = {
       type: "SAVE_MEDIA_STREAM",
-      url: data.url,
-      metadata
+      url: result.rewrittenUrl || data.url,
+      metadata: result.metadata
     }
 
     chrome.runtime.sendMessage(msg)

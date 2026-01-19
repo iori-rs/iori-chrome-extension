@@ -1,3 +1,4 @@
+import type { PluginExecuteResult } from "~src/plugins/types"
 import type { IoriRuntimeMessage, MediaStream, StreamMetadata } from "./types"
 
 // Background Service Worker for media stream sniffing
@@ -168,7 +169,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         try {
           const response = await chrome.tabs.sendMessage<
             IoriRuntimeMessage,
-            StreamMetadata
+            PluginExecuteResult
           >(tabId, { type: "EXTRACT_METADATA", url })
           return response
         } catch {
@@ -176,8 +177,12 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
       }
 
-      tryFetchMetadata().then((metadata) => {
-        saveMediaStream(tabId, url, metadata)
+      tryFetchMetadata().then((result) => {
+        if (result) {
+          saveMediaStream(tabId, result.rewrittenUrl || url, result.metadata)
+        } else {
+          saveMediaStream(tabId, url, undefined)
+        }
       })
     }
   },
@@ -193,6 +198,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 // Clean up when tab is refreshed/navigated
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  console.log("[Media Sniffer] Tab updated:", tabId, changeInfo)
   // Clear data when navigation starts (page refresh or new URL)
   if (changeInfo.status === "loading") {
     clearTabStreams(tabId)
