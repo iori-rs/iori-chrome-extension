@@ -29,7 +29,7 @@ export class NicoPlugin implements IoriPlugin {
       })
 
       if (cookieValue) {
-        metadata.cliArgs = ["--nico-user-session", cookieValue]
+        metadata.cliArgs = { "--nico-user-session": cookieValue }
       }
     } catch (e) {
       console.warn("[Nico Plugin] Failed to fetch session cookie", e)

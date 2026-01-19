@@ -7,7 +7,10 @@ import type { MediaStream, UserSettings } from "../types"
  * @param settings The user's configuration settings
  * @returns A string representing the shiori command
  */
-export function generateShioriCommand(stream: MediaStream, settings: UserSettings): string {
+export function generateShioriCommand(
+  stream: MediaStream,
+  settings: UserSettings
+): string {
   let command = `shiori dl "${stream.url}"`
 
   // Optional settings - only append if different from CLI defaults or explicitly enabled
@@ -53,6 +56,13 @@ export function generateShioriCommand(stream: MediaStream, settings: UserSetting
     command += ` -H "${key}: ${value.replace(/"/g, '\\"')}"`
   })
 
+  // 4. Append plugin-specific CLI args
+  if (stream.metadata?.cliArgs) {
+    Object.entries(stream.metadata.cliArgs).forEach(([key, value]) => {
+      command += ` ${key} "${value.replace(/"/g, '\\"')}"`
+    })
+  }
+
   // Handle Output Filename from Metadata
   if (stream.metadata?.title) {
     // Simple sanitization to prevent command injection or invalid filenames
@@ -62,11 +72,6 @@ export function generateShioriCommand(stream: MediaStream, settings: UserSetting
     if (safeTitle.length > 0) {
       command += ` --output "${safeTitle}"`
     }
-  }
-
-  // Append plugin-specific CLI args
-  if (stream.metadata?.cliArgs && stream.metadata.cliArgs.length > 0) {
-    command += " " + stream.metadata.cliArgs.join(" ")
   }
 
   return command

@@ -10,7 +10,7 @@ export interface StreamMetadata {
   /**
    * Additional CLI arguments
    */
-  cliArgs?: string[]
+  cliArgs?: Record<string, string>
 }
 
 export interface MediaStream {
