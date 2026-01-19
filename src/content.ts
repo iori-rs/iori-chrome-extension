@@ -29,7 +29,7 @@ async function extractPageMetadata() {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "EXTRACT_METADATA") {
     extractPageMetadata().then((metadata) => {
-        sendResponse(metadata)
+      sendResponse(metadata)
     })
     return true // Keep channel open for async response
   }
@@ -41,7 +41,7 @@ window.addEventListener("message", async (event) => {
 
   if (event.data?.type === "IORI_HLS_FOUND" && event.data?.url) {
     console.log("[IORI] Content script received HLS URL:", event.data.url)
-    
+
     const metadata = await extractPageMetadata()
 
     chrome.runtime.sendMessage({

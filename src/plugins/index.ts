@@ -1,9 +1,7 @@
-import { DemoPlugin } from "./impl/demo"
 import { OpenrecPlugin } from "./impl/openrec"
 import type { IoriPlugin } from "./types"
 
 const plugins: IoriPlugin[] = [
-  new DemoPlugin(),
   new OpenrecPlugin()
   // Add more plugins here
 ]
