@@ -1,8 +1,10 @@
+import { NicoPlugin } from "./impl/nico"
 import { OpenrecPlugin } from "./impl/openrec"
 import type { IoriPlugin } from "./types"
 
 const plugins: IoriPlugin[] = [
-  new OpenrecPlugin()
+  new OpenrecPlugin(),
+  new NicoPlugin()
   // Add more plugins here
 ]
 

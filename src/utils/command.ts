@@ -64,5 +64,10 @@ export function generateShioriCommand(stream: MediaStream, settings: UserSetting
     }
   }
 
+  // Append plugin-specific CLI args
+  if (stream.metadata?.cliArgs && stream.metadata.cliArgs.length > 0) {
+    command += " " + stream.metadata.cliArgs.join(" ")
+  }
+
   return command
 }

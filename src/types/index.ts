@@ -7,6 +7,10 @@ export interface StreamMetadata {
    * Header fields including User-Agent and Referer
    */
   headers?: Record<string, string>
+  /**
+   * Additional CLI arguments
+   */
+  cliArgs?: string[]
 }
 
 export interface MediaStream {
@@ -50,4 +54,12 @@ export interface MsgExtractMetadata {
   url?: string
 }
 
-export type IoriRuntimeMessage = MsgSaveMediaStream | MsgExtractMetadata
+export interface MsgGetCookie {
+  type: "GET_COOKIE"
+  name: string
+}
+
+export type IoriRuntimeMessage =
+  | MsgSaveMediaStream
+  | MsgExtractMetadata
+  | MsgGetCookie
