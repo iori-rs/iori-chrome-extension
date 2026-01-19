@@ -1,17 +1,4 @@
-export interface StreamMetadata {
-  /**
-   * Extracted page title or specific element text usually used for filename
-   */
-  title?: string
-  /**
-   * Specific User-Agent to be used for this stream
-   */
-  userAgent?: string
-  /**
-   * Referrer URL if needed
-   */
-  referer?: string
-}
+import type { StreamMetadata } from "~src/types"
 
 export interface IoriPlugin {
   /**

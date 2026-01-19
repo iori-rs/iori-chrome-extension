@@ -31,18 +31,27 @@ export function generateShioriCommand(stream: MediaStream, settings: UserSetting
     command += ` --in-memory-cache`
   }
 
-  // Handle User Agent: Plugin metadata > Settings > Default
-  const metadataUA = stream.metadata?.userAgent
-  const settingsUA = settings.userAgent
+  // Handle Headers (User-Agent, Referer, etc)
+  // Priority: stream.metadata.headers > settings
+  const finalHeaders: Record<string, string> = {}
 
-  if (metadataUA) {
-    const safeUA = metadataUA.replace(/"/g, '\\"')
-    command += ` -H "User-Agent: ${safeUA}"`
-  } else if (settingsUA && settingsUA.trim().length > 0) {
-    // Escape double quotes in user agent just in case
-    const safeUA = settingsUA.replace(/"/g, '\\"')
-    command += ` -H "User-Agent: ${safeUA}"`
+  // 1. Apply settings headers
+  if (settings.userAgent && settings.userAgent.trim().length > 0) {
+    finalHeaders["user-agent"] = settings.userAgent
   }
+
+  // 2. Apply metadata headers (overwrite settings)
+  // Ensure keys are lowercased for consistent merging
+  if (stream.metadata?.headers) {
+    Object.entries(stream.metadata.headers).forEach(([key, value]) => {
+      finalHeaders[key.toLowerCase()] = value
+    })
+  }
+
+  // 3. Append headers to command
+  Object.entries(finalHeaders).forEach(([key, value]) => {
+    command += ` -H "${key}: ${value.replace(/"/g, '\\"')}"`
+  })
 
   // Handle Output Filename from Metadata
   if (stream.metadata?.title) {
