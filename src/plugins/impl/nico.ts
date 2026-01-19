@@ -1,6 +1,7 @@
-import type { MsgGetCookie, StreamMetadata } from "~src/types"
+import type { StreamMetadata } from "~src/types"
 
 import type { IoriPlugin, PluginExecuteResult } from "../types"
+import { getCookie } from "../utils"
 
 export class NicoPlugin implements IoriPlugin {
   name = "Nico Plugin"
@@ -20,20 +21,10 @@ export class NicoPlugin implements IoriPlugin {
       metadata.title = titleEl.textContent
     }
 
-    try {
-      const cookieValue = await chrome.runtime.sendMessage<
-        MsgGetCookie,
-        string | undefined
-      >({
-        type: "GET_COOKIE",
-        name: "user_session"
-      })
+    const cookieValue = await getCookie("user_session")
 
-      if (cookieValue) {
-        metadata.cliArgs = { "--nico-user-session": cookieValue }
-      }
-    } catch (e) {
-      console.warn("[Nico Plugin] Failed to fetch session cookie", e)
+    if (cookieValue) {
+      metadata.cliArgs = { "--nico-user-session": cookieValue }
     }
 
     return { metadata, rewrittenUrl: pageUrl }
