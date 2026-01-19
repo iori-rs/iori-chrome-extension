@@ -31,7 +31,8 @@
       "webRequest",
       "storage",
       "tabs",
-      "cookies"
+      "cookies",
+      "webNavigation"
     ],
     "host_permissions": [
       "<all_urls>"

@@ -197,11 +197,13 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 })
 
 // Clean up when tab is refreshed/navigated
-chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  console.log("[Media Sniffer] Tab updated:", tabId, changeInfo)
-  // Clear data when navigation starts (page refresh or new URL)
-  if (changeInfo.status === "loading") {
-    clearTabStreams(tabId)
+chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+  if (details.frameId === 0) {
+    console.log(
+      "[Media Sniffer] Navigation detected, clearing streams for tab:",
+      details.tabId
+    )
+    clearTabStreams(details.tabId)
   }
 })
 
