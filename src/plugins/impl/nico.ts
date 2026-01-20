@@ -8,7 +8,10 @@ export class NicoPlugin implements IoriPlugin {
   description = "Plugin for Nicovideo"
 
   match(pageUrl: string): boolean {
-    return pageUrl.includes("live.nicovideo.jp")
+    return (
+      pageUrl.includes("live.nicovideo.jp") ||
+      pageUrl.includes("nicovideo.jp/watch")
+    )
   }
 
   async process(streamUrl?: string): Promise<PluginExecuteResult> {
@@ -19,6 +22,8 @@ export class NicoPlugin implements IoriPlugin {
 
     if (titleEl) {
       metadata.title = titleEl.textContent
+    } else {
+      metadata.title = document.title.split("-")[0].trim()
     }
 
     const cookieValue = await getCookie("user_session")
