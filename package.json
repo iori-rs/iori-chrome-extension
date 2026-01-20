@@ -1,7 +1,7 @@
 {
   "name": "iori-chrome-extension",
   "displayName": "Iori chrome extension",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Chrome extension for iori",
   "author": "",
   "scripts": {
