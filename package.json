@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "package": "plasmo package",
+    "release": "node scripts/release.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
