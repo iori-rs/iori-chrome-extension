@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -39,9 +39,3 @@ jobs:
         with:
           name: iori-extension-unpacked
           path: build/chrome-mv3-prod
-
-      - name: Upload Zip Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: iori-extension-zip
-          path: build/*.zip
