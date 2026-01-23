@@ -1,5 +1,5 @@
 import { Button } from "@base-ui/react/button"
-import { Check, ChevronDown, Copy, Film } from "lucide-react"
+import { Check, ChevronDown, Copy, Film, Link } from "lucide-react"
 import { useState } from "react"
 
 import { useClipboard } from "../../hooks/useClipboard"
@@ -18,15 +18,23 @@ interface StreamCardProps {
   defaultExpanded?: boolean
 }
 
-export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false }: StreamCardProps) {
+export function StreamCard({
+  stream,
+  settings,
+  pageUrl,
+  defaultExpanded = false
+}: StreamCardProps) {
   // Get plugin options based on current page URL
   const availableOptions = getPluginOptionsForUrl(pageUrl)
   const hasOptions = availableOptions.length > 0
 
-  const [showCommand, setShowCommand] = useState(true)
   const [showOptions, setShowOptions] = useState(defaultExpanded && hasOptions)
-  const [pluginOptions, setPluginOptions] = useState<Record<string, string | boolean>>({})
-  const { copied, copy } = useClipboard()
+  const [isCommandExpanded, setIsCommandExpanded] = useState(false)
+  const [pluginOptions, setPluginOptions] = useState<
+    Record<string, string | boolean>
+  >({})
+  const { copied: commandCopied, copy: copyCommand } = useClipboard()
+  const { copied: urlCopied, copy: copyUrl } = useClipboard()
   const extension = getFileExtension(stream.url)
 
   // Initialize plugin options with default values
@@ -45,14 +53,23 @@ export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false 
     hasOptions ? { ...initializeOptions(), ...pluginOptions } : undefined
   )
 
-  const handleCopy = (e: React.MouseEvent) => {
+  const handleCopyCommand = (e: React.MouseEvent) => {
     e.stopPropagation()
-    copy(command)
+    copyCommand(command)
   }
 
-  const toggleDisplay = (e: React.MouseEvent) => {
+  const handleCopyUrl = (e: React.MouseEvent) => {
     e.stopPropagation()
-    setShowCommand((prev) => !prev)
+    copyUrl(stream.url)
+  }
+
+  const handleCommandClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isCommandExpanded) {
+      setIsCommandExpanded(true)
+    } else {
+      copyCommand(command)
+    }
   }
 
   const toggleOptions = () => {
@@ -67,8 +84,6 @@ export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false 
       [key]: value
     }))
   }
-
-  const displayContent = showCommand ? command : stream.url
 
   return (
     <div
@@ -105,11 +120,10 @@ export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false 
       </div>
 
       <div
-        className="stream-url"
-        title={displayContent}
-        onClick={toggleDisplay}
-        style={{ cursor: "pointer" }}>
-        {displayContent}
+        className={`stream-command ${isCommandExpanded ? "expanded" : ""}`}
+        title={command}
+        onClick={handleCommandClick}>
+        {command}
       </div>
 
       {showOptions && (
@@ -120,19 +134,36 @@ export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false 
         />
       )}
 
-      <Button
-        onClick={handleCopy}
-        className={`copy-button ${copied ? "copied" : ""}`}>
-        {copied ? (
-          <>
-            <Check size={14} /> 已复制
-          </>
-        ) : (
-          <>
-            <Copy size={14} /> 复制命令
-          </>
-        )}
-      </Button>
+      <div style={{ display: "flex", gap: "8px" }}>
+        <Button
+          onClick={handleCopyCommand}
+          className={`copy-button ${commandCopied ? "copied" : ""}`}
+          style={{ flex: 1 }}>
+          {commandCopied ? (
+            <>
+              <Check size={14} /> 已复制
+            </>
+          ) : (
+            <>
+              <Copy size={14} /> 复制命令
+            </>
+          )}
+        </Button>
+        <Button
+          onClick={handleCopyUrl}
+          className={`copy-button ${urlCopied ? "copied" : ""}`}
+          style={{ flex: 1 }}>
+          {urlCopied ? (
+            <>
+              <Check size={14} /> 已复制
+            </>
+          ) : (
+            <>
+              <Link size={14} /> 复制链接
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   )
 }

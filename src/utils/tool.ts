@@ -4,8 +4,8 @@ export const getFileExtension = (url: string): string => {
     const pathname = urlObj.pathname.toLowerCase()
     if (pathname.endsWith(".m3u8")) return "HLS"
     if (pathname.endsWith(".mpd")) return "DASH"
-    return "Unknown"
+    return "CUSTOM"
   } catch {
-    return "Unknown"
+    return "CUSTOM"
   }
 }
