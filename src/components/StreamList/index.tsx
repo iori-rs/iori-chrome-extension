@@ -17,6 +17,7 @@ export function StreamList({ streams, settings, pageUrl }: StreamListProps) {
           stream={stream}
           settings={settings}
           pageUrl={pageUrl}
+          defaultExpanded={index === 0}
         />
       ))}
     </div>

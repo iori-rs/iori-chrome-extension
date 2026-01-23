@@ -15,18 +15,19 @@ interface StreamCardProps {
   stream: MediaStream
   settings: UserSettings
   pageUrl: string
+  defaultExpanded?: boolean
 }
 
-export function StreamCard({ stream, settings, pageUrl }: StreamCardProps) {
-  const [showCommand, setShowCommand] = useState(true)
-  const [showOptions, setShowOptions] = useState(false)
-  const [pluginOptions, setPluginOptions] = useState<Record<string, string | boolean>>({})
-  const { copied, copy } = useClipboard()
-  const extension = getFileExtension(stream.url)
-
+export function StreamCard({ stream, settings, pageUrl, defaultExpanded = false }: StreamCardProps) {
   // Get plugin options based on current page URL
   const availableOptions = getPluginOptionsForUrl(pageUrl)
   const hasOptions = availableOptions.length > 0
+
+  const [showCommand, setShowCommand] = useState(true)
+  const [showOptions, setShowOptions] = useState(defaultExpanded && hasOptions)
+  const [pluginOptions, setPluginOptions] = useState<Record<string, string | boolean>>({})
+  const { copied, copy } = useClipboard()
+  const extension = getFileExtension(stream.url)
 
   // Initialize plugin options with default values
   const initializeOptions = (): Record<string, string | boolean> => {
