@@ -55,6 +55,7 @@
 }
 
 .stream-title {
+  margin-left: 6px;
   flex-grow: 1;
   text-overflow: ellipsis;
   overflow: hidden;
