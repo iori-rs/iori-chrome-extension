@@ -1,5 +1,6 @@
 import { Button } from "@base-ui/react/button"
 import { Check, Copy, Film } from "lucide-react"
+import { useState } from "react"
 
 import { useClipboard } from "../../hooks/useClipboard"
 import type { MediaStream, UserSettings } from "../../types"
@@ -14,13 +15,20 @@ interface StreamCardProps {
 }
 
 export function StreamCard({ stream, settings }: StreamCardProps) {
+  const [showCommand, setShowCommand] = useState(true)
   const { copied, copy } = useClipboard()
   const extension = getFileExtension(stream.url)
+  const command = generateShioriCommand(stream, settings)
 
   const handleCopy = () => {
-    const command = generateShioriCommand(stream, settings)
     copy(command)
   }
+
+  const toggleDisplay = () => {
+    setShowCommand((prev) => !prev)
+  }
+
+  const displayContent = showCommand ? command : stream.url
 
   return (
     <div className="stream-card">
@@ -34,8 +42,12 @@ export function StreamCard({ stream, settings }: StreamCardProps) {
         <span className="stream-title">{stream.metadata?.title || ""}</span>
       </div>
 
-      <div className="stream-url" title={stream.url}>
-        {stream.url}
+      <div
+        className="stream-url"
+        title={displayContent}
+        onClick={toggleDisplay}
+        style={{ cursor: "pointer" }}>
+        {displayContent}
       </div>
 
       <Button
