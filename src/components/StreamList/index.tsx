@@ -5,9 +5,10 @@ import "./style.css"
 interface StreamListProps {
   streams: MediaStream[]
   settings: UserSettings
+  pageUrl: string
 }
 
-export function StreamList({ streams, settings }: StreamListProps) {
+export function StreamList({ streams, settings, pageUrl }: StreamListProps) {
   return (
     <div className="streams-list">
       {streams.map((stream, index) => (
@@ -15,6 +16,7 @@ export function StreamList({ streams, settings }: StreamListProps) {
           key={`${stream.url}-${index}`}
           stream={stream}
           settings={settings}
+          pageUrl={pageUrl}
         />
       ))}
     </div>

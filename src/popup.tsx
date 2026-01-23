@@ -11,7 +11,7 @@ import { useSettings } from "./hooks/useSettings"
 import "./popup.css"
 
 function IndexPopup() {
-  const { streams, loading: streamsLoading, reload } = useMediaStreams()
+  const { streams, loading: streamsLoading, reload, currentTabUrl } = useMediaStreams()
   const { settings, loading: settingsLoading, updateSettings } = useSettings()
   const [view, setView] = useState<"list" | "settings">("list")
 
@@ -45,7 +45,7 @@ function IndexPopup() {
       ) : (
         <>
           <ActionPanel count={streams.length} onRefresh={reload} />
-          <StreamList streams={streams} settings={settings} />
+          <StreamList streams={streams} settings={settings} pageUrl={currentTabUrl} />
         </>
       )}
     </div>

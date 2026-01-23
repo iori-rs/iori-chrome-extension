@@ -5,6 +5,7 @@ export const useMediaStreams = () => {
   const [streams, setStreams] = useState<MediaStream[]>([])
   const [loading, setLoading] = useState(true)
   const [currentTabId, setCurrentTabId] = useState<number | null>(null)
+  const [currentTabUrl, setCurrentTabUrl] = useState<string>("")
 
   const loadStreams = useCallback(async () => {
     setLoading(true)
@@ -18,6 +19,7 @@ export const useMediaStreams = () => {
       }
 
       setCurrentTabId(tab.id)
+      setCurrentTabUrl(tab.url || "")
 
       // Get stored streams for this tab
       const storageKey = `media_streams_${tab.id}`
@@ -60,5 +62,5 @@ export const useMediaStreams = () => {
     }
   }, [currentTabId])
 
-  return { streams, loading, currentTabId, reload: loadStreams }
+  return { streams, loading, currentTabId, currentTabUrl, reload: loadStreams }
 }

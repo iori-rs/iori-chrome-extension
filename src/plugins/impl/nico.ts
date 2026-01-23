@@ -1,6 +1,6 @@
 import type { StreamMetadata } from "~src/types"
 
-import type { IoriPlugin, PluginExecuteResult } from "../types"
+import type { IoriPlugin, PluginExecuteResult, PluginOption } from "../types"
 import { getCookie } from "../utils"
 
 export class NicoPlugin implements IoriPlugin {
@@ -12,6 +12,39 @@ export class NicoPlugin implements IoriPlugin {
       pageUrl.includes("live.nicovideo.jp") ||
       pageUrl.includes("nicovideo.jp/watch")
     )
+  }
+
+  getOptions(): PluginOption[] {
+    return [
+      {
+        key: "nico-download-danmaku",
+        label: "下载弹幕",
+        type: "boolean",
+        defaultValue: false,
+        description: "同时下载弹幕文件"
+      },
+      {
+        key: "nico-chase-play",
+        label: "追播模式",
+        type: "boolean",
+        defaultValue: false,
+        description: "从头开始下载正在进行的直播"
+      },
+      {
+        key: "nico-reserve-timeshift",
+        label: "自动预约时移",
+        type: "boolean",
+        defaultValue: false,
+        description: "如果未预约，自动预约时移"
+      },
+      {
+        key: "nico-danmaku-only",
+        label: "仅下载弹幕",
+        type: "boolean",
+        defaultValue: false,
+        description: "仅下载弹幕，不下载视频"
+      }
+    ]
   }
 
   async process(streamUrl?: string): Promise<PluginExecuteResult> {

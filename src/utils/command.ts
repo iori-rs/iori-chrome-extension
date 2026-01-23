@@ -5,11 +5,13 @@ import type { MediaStream, UserSettings } from "../types"
  *
  * @param stream The media stream object containing URL and metadata
  * @param settings The user's configuration settings
+ * @param pluginOptions Optional plugin-specific options configured by the user
  * @returns A string representing the shiori command
  */
 export function generateShioriCommand(
   stream: MediaStream,
-  settings: UserSettings
+  settings: UserSettings,
+  pluginOptions?: Record<string, string | boolean>
 ): string {
   let command = `shiori dl "${stream.url}"`
 
@@ -56,10 +58,25 @@ export function generateShioriCommand(
     command += ` -H "${key}: ${value.replace(/"/g, '\\"')}"`
   })
 
-  // 4. Append plugin-specific CLI args
+  // 4. Append plugin-specific CLI args from metadata
   if (stream.metadata?.cliArgs) {
     Object.entries(stream.metadata.cliArgs).forEach(([key, value]) => {
       command += ` ${key} "${value.replace(/"/g, '\\"')}"`
+    })
+  }
+
+  // 5. Append user-configured plugin options
+  if (pluginOptions) {
+    Object.entries(pluginOptions).forEach(([key, value]) => {
+      if (typeof value === "boolean") {
+        // Only add flag if value is true
+        if (value) {
+          command += ` --${key}`
+        }
+      } else if (typeof value === "string" && value.trim().length > 0) {
+        // Add string option with value
+        command += ` --${key} "${value.replace(/"/g, '\\"')}"`
+      }
     })
   }
 

@@ -5,6 +5,31 @@ export interface PluginExecuteResult {
   rewrittenUrl?: string
 }
 
+export type PluginOptionType = "string" | "boolean"
+
+export interface PluginOption {
+  /**
+   * CLI flag key (e.g., "nico-download-danmaku")
+   */
+  key: string
+  /**
+   * Human-readable label for the UI
+   */
+  label: string
+  /**
+   * Option type - determines the input control
+   */
+  type: PluginOptionType
+  /**
+   * Default value for the option
+   */
+  defaultValue: string | boolean
+  /**
+   * Optional description or help text
+   */
+  description?: string
+}
+
 export interface IoriPlugin {
   /**
    * Name of the plugin
@@ -23,4 +48,9 @@ export interface IoriPlugin {
    * This runs in the content script context (DOM access available)
    */
   process: (streamUrl?: string) => Promise<PluginExecuteResult>
+  /**
+   * Optional: Return configurable options for this plugin
+   * These options will be displayed in the stream card UI
+   */
+  getOptions?: () => PluginOption[]
 }
