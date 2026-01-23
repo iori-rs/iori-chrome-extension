@@ -1,5 +1,5 @@
 import { Button } from "@base-ui/react/button"
-import { Check, ChevronDown, ChevronUp, Copy, Film } from "lucide-react"
+import { Check, ChevronDown, Copy, Film } from "lucide-react"
 import { useState } from "react"
 
 import { useClipboard } from "../../hooks/useClipboard"
@@ -7,6 +7,7 @@ import { getPluginOptionsForUrl } from "../../plugins"
 import type { MediaStream, UserSettings } from "../../types"
 import { generateShioriCommand } from "../../utils/command"
 import { getFileExtension } from "../../utils/tool"
+import { StreamOptions } from "./StreamOptions"
 
 import "./style.css"
 
@@ -43,16 +44,20 @@ export function StreamCard({ stream, settings, pageUrl }: StreamCardProps) {
     hasOptions ? { ...initializeOptions(), ...pluginOptions } : undefined
   )
 
-  const handleCopy = () => {
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation()
     copy(command)
   }
 
-  const toggleDisplay = () => {
+  const toggleDisplay = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setShowCommand((prev) => !prev)
   }
 
   const toggleOptions = () => {
-    setShowOptions((prev) => !prev)
+    if (hasOptions) {
+      setShowOptions((prev) => !prev)
+    }
   }
 
   const handleOptionChange = (key: string, value: string | boolean) => {
@@ -65,7 +70,10 @@ export function StreamCard({ stream, settings, pageUrl }: StreamCardProps) {
   const displayContent = showCommand ? command : stream.url
 
   return (
-    <div className="stream-card">
+    <div
+      className="stream-card"
+      onClick={toggleOptions}
+      style={{ cursor: hasOptions ? "pointer" : "default" }}>
       <div className="stream-header">
         <div className="stream-info-left">
           <Film size={14} className="stream-icon" />
@@ -74,6 +82,25 @@ export function StreamCard({ stream, settings, pageUrl }: StreamCardProps) {
           </span>
         </div>
         <span className="stream-title">{stream.metadata?.title || ""}</span>
+        {hasOptions && (
+          <button
+            title={showOptions ? "隐藏选项" : "显示选项"}
+            style={{
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#6b7280",
+              marginLeft: "4px",
+              transform: showOptions ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.2s"
+            }}>
+            <ChevronDown size={16} />
+          </button>
+        )}
       </div>
 
       <div
@@ -84,66 +111,12 @@ export function StreamCard({ stream, settings, pageUrl }: StreamCardProps) {
         {displayContent}
       </div>
 
-      {hasOptions && (
-        <button className="options-toggle" onClick={toggleOptions}>
-          {showOptions ? (
-            <>
-              <ChevronUp size={14} /> 隐藏选项
-            </>
-          ) : (
-            <>
-              <ChevronDown size={14} /> 显示选项
-            </>
-          )}
-        </button>
-      )}
-
-      {hasOptions && showOptions && (
-        <div className="plugin-options">
-          {availableOptions.map((option) => (
-            <div key={option.key} className="option-item">
-              {option.type === "boolean" ? (
-                <label className="option-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={
-                      (typeof pluginOptions[option.key] === "boolean"
-                        ? pluginOptions[option.key]
-                        : option.defaultValue) as boolean
-                    }
-                    onChange={(e) =>
-                      handleOptionChange(option.key, e.target.checked)
-                    }
-                  />
-                  <div className="option-checkbox-content">
-                    <span className="option-label">{option.label}</span>
-                    {option.description && (
-                      <span className="option-description">
-                        {option.description}
-                      </span>
-                    )}
-                  </div>
-                </label>
-              ) : (
-                <label className="option-text">
-                  <span className="option-label">{option.label}</span>
-                  <input
-                    type="text"
-                    value={
-                      (typeof pluginOptions[option.key] === "string"
-                        ? pluginOptions[option.key]
-                        : option.defaultValue) as string
-                    }
-                    onChange={(e) =>
-                      handleOptionChange(option.key, e.target.value)
-                    }
-                    placeholder={option.description}
-                  />
-                </label>
-              )}
-            </div>
-          ))}
-        </div>
+      {showOptions && (
+        <StreamOptions
+          availableOptions={availableOptions}
+          values={pluginOptions}
+          onChange={handleOptionChange}
+        />
       )}
 
       <Button
