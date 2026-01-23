@@ -1,4 +1,5 @@
 import { NicoPlugin } from "./impl/nico"
+import { NicoChannelPlugin } from "./impl/nicochannel"
 import { OpenrecPlugin } from "./impl/openrec"
 import { ShowroomPlugin } from "./impl/showroom"
 import type { IoriPlugin } from "./types"
@@ -6,6 +7,7 @@ import type { IoriPlugin } from "./types"
 const plugins: IoriPlugin[] = [
   new OpenrecPlugin(),
   new NicoPlugin(),
+  new NicoChannelPlugin(),
   new ShowroomPlugin()
   // Add more plugins here
 ]
