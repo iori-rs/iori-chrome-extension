@@ -3,7 +3,8 @@ import { Check, ChevronDown, Copy, Film, Link } from "lucide-react"
 import { useState } from "react"
 
 import { useClipboard } from "../../hooks/useClipboard"
-import { getPluginOptionsForUrl } from "../../plugins"
+import { usePluginOptions } from "../../hooks/usePluginOptions"
+import { getPlugin } from "../../plugins"
 import type { MediaStream, UserSettings } from "../../types"
 import { generateShioriCommand } from "../../utils/command"
 import { getFileExtension } from "../../utils/tool"
@@ -25,32 +26,25 @@ export function StreamCard({
   defaultExpanded = false
 }: StreamCardProps) {
   // Get plugin options based on current page URL
-  const availableOptions = getPluginOptionsForUrl(pageUrl)
+  const plugin = getPlugin(pageUrl)
+  const availableOptions = plugin?.getOptions?.() || []
   const hasOptions = availableOptions.length > 0
 
   const [showOptions, setShowOptions] = useState(defaultExpanded && hasOptions)
   const [isCommandExpanded, setIsCommandExpanded] = useState(false)
-  const [pluginOptions, setPluginOptions] = useState<
-    Record<string, string | boolean>
-  >({})
+  const { options: pluginOptions, updateOption } = usePluginOptions(
+    plugin?.name,
+    availableOptions
+  )
   const { copied: commandCopied, copy: copyCommand } = useClipboard()
   const { copied: urlCopied, copy: copyUrl } = useClipboard()
   const extension = getFileExtension(stream.url)
-
-  // Initialize plugin options with default values
-  const initializeOptions = (): Record<string, string | boolean> => {
-    const initialized: Record<string, string | boolean> = {}
-    availableOptions.forEach((option) => {
-      initialized[option.key] = option.defaultValue
-    })
-    return initialized
-  }
 
   // Generate command with current plugin options
   const command = generateShioriCommand(
     stream,
     settings,
-    hasOptions ? { ...initializeOptions(), ...pluginOptions } : undefined
+    hasOptions ? pluginOptions : undefined
   )
 
   const handleCopyCommand = (e: React.MouseEvent) => {
@@ -79,10 +73,7 @@ export function StreamCard({
   }
 
   const handleOptionChange = (key: string, value: string | boolean) => {
-    setPluginOptions((prev) => ({
-      ...prev,
-      [key]: value
-    }))
+    updateOption(key, value)
   }
 
   return (
