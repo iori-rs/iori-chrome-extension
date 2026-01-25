@@ -12,7 +12,7 @@
   font-weight: 500;
 }
 
-.refresh-button {
+.clear-button {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -26,15 +26,15 @@
   cursor: pointer;
 }
 
-.refresh-button:hover {
+.clear-button:hover {
   background-color: #f3f4f6;
   border-color: #9ca3af;
 }
 
-.refresh-button:active {
+.clear-button:active {
   background-color: #e5e7eb;
 }
 
-.refresh-icon {
+.clear-icon {
   display: inline-block;
 }

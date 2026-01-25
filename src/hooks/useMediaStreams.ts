@@ -62,5 +62,12 @@ export const useMediaStreams = () => {
     }
   }, [currentTabId])
 
-  return { streams, loading, currentTabId, currentTabUrl, reload: loadStreams }
+  const clear = useCallback(async () => {
+    if (!currentTabId) return
+    const storageKey = `media_streams_${currentTabId}`
+    await chrome.storage.local.remove(storageKey)
+    setStreams([])
+  }, [currentTabId])
+
+  return { streams, loading, currentTabId, currentTabUrl, reload: loadStreams, clear }
 }

@@ -11,7 +11,7 @@ import { useSettings } from "./hooks/useSettings"
 import "./popup.css"
 
 function IndexPopup() {
-  const { streams, loading: streamsLoading, reload, currentTabUrl } = useMediaStreams()
+  const { streams, loading: streamsLoading, clear, currentTabUrl } = useMediaStreams()
   const { settings, loading: settingsLoading, updateSettings } = useSettings()
   const [view, setView] = useState<"list" | "settings">("list")
 
@@ -38,13 +38,13 @@ function IndexPopup() {
       {streamsLoading ? (
         <div className="loading-container">
           <div className="loader" />
-          <span>正在扫描流媒体资源...</span>
+          <span>正在等待流媒体资源...</span>
         </div>
       ) : streams.length === 0 ? (
         <EmptyState />
       ) : (
         <>
-          <ActionPanel count={streams.length} onRefresh={reload} />
+          <ActionPanel count={streams.length} onClear={clear} />
           <StreamList streams={streams} settings={settings} pageUrl={currentTabUrl} />
         </>
       )}
