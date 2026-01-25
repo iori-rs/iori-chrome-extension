@@ -1,6 +1,7 @@
 import "./detector"
 import "./messages"
 import "./tabs"
+import "./badge"
 
 import { cleanStaleData } from "./storage"
 

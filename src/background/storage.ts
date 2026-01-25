@@ -5,7 +5,7 @@ interface StorageData {
 }
 
 // Storage key prefix
-const STORAGE_PREFIX = "media_streams_"
+export const STORAGE_PREFIX = "media_streams_"
 
 /**
  * Get storage key for a specific tab
