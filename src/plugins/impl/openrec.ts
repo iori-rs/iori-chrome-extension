@@ -1,4 +1,5 @@
 import type { StreamMetadata } from "~src/types"
+
 import type { IoriPlugin, PluginExecuteResult } from "../types"
 
 export class OpenrecPlugin implements IoriPlugin {
@@ -10,7 +11,11 @@ export class OpenrecPlugin implements IoriPlugin {
   }
 
   async process(streamUrl?: string): Promise<PluginExecuteResult> {
-    const metadata: StreamMetadata = {}
+    const metadata: StreamMetadata = {
+      headers: {
+        referer: "https://www.openrec.tv/"
+      }
+    }
 
     const titleEl = document.querySelector("title")
     if (titleEl) {
