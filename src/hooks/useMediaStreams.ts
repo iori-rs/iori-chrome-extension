@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+
 import type { MediaStream } from "../types"
 
 export const useMediaStreams = () => {
@@ -7,11 +8,16 @@ export const useMediaStreams = () => {
   const [currentTabId, setCurrentTabId] = useState<number | null>(null)
   const [currentTabUrl, setCurrentTabUrl] = useState<string>("")
 
+  const reversedStreams = [...streams].reverse()
+
   const loadStreams = useCallback(async () => {
     setLoading(true)
     try {
       // Get current active tab
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+      })
 
       if (!tab?.id) {
         setLoading(false)
@@ -69,5 +75,12 @@ export const useMediaStreams = () => {
     setStreams([])
   }, [currentTabId])
 
-  return { streams, loading, currentTabId, currentTabUrl, reload: loadStreams, clear }
+  return {
+    streams: reversedStreams,
+    loading,
+    currentTabId,
+    currentTabUrl,
+    reload: loadStreams,
+    clear
+  }
 }
