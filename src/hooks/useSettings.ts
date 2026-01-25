@@ -11,7 +11,8 @@ const DEFAULT_SETTINGS: UserSettings = {
   manifestRetries: 3,
   inMemoryCache: false,
   noMerge: false,
-  userAgent: ""
+  userAgent: "",
+  useTui: false
 }
 
 export function useSettings() {

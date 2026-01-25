@@ -28,6 +28,7 @@ export interface UserSettings {
   noMerge?: boolean
   userAgent?: string
   streamSortOrder?: "asc" | "desc"
+  useTui?: boolean
 }
 
 // --- Message Types ---

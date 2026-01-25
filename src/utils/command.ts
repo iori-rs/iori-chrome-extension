@@ -40,6 +40,10 @@ export function generateShioriCommand(
     command += ` --in-memory-cache`
   }
 
+  if (settings.useTui) {
+    command += ` --tui`
+  }
+
   // Handle Headers (User-Agent, Referer, etc)
   // Priority: stream.metadata.headers > settings
   const finalHeaders: Record<string, string> = {}

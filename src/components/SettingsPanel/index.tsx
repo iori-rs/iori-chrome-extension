@@ -134,6 +134,16 @@ export function SettingsPanel({
 
           <div className="checkbox-group">
             <input
+              id="useTui"
+              type="checkbox"
+              checked={settings.useTui ?? false}
+              onChange={(e) => onUpdate({ useTui: e.target.checked })}
+            />
+            <label htmlFor="useTui">使用 TUI 界面 (--tui)</label>
+          </div>
+
+          <div className="checkbox-group">
+            <input
               id="inMemoryCache"
               type="checkbox"
               checked={settings.inMemoryCache ?? false}
