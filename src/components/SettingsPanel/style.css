@@ -48,13 +48,30 @@
 
 .section-title {
   font-size: 14px;
-  font-weight: 600;
-  color: #64748b;
-  margin: 0 0 12px 0;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin-left: 12px;
+}
+
+.subsection-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 24px 0 16px 0;
+  padding-top: 24px;
+  border-top: 1px dashed #e2e8f0;
 }
 
 .form-group {

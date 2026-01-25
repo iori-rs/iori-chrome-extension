@@ -104,10 +104,10 @@ export function SettingsPanel({
               className="settings-input"
             />
           </div>
-        </div>
 
-        <div className="settings-section">
-          <h4 className="section-title">高级选项</h4>
+          <h4 className="subsection-title">
+            高级选项
+          </h4>
 
           <div className="form-group">
             <label htmlFor="userAgent">User Agent</label>
