@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   concurrency: 5,
   timeout: 10,
   segmentRetries: 5,
+  manifestRetries: 3,
   inMemoryCache: false,
   noMerge: false,
   userAgent: ""

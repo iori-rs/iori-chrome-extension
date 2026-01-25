@@ -46,7 +46,7 @@ export function SettingsPanel({
         <div className="settings-section">
           <h4 className="section-title">下载配置</h4>
           <div className="form-group">
-            <label htmlFor="concurrency">并发数 (Concurrency)</label>
+            <label htmlFor="concurrency">并发数 (--concurrency)</label>
             <input
               id="concurrency"
               type="number"
@@ -61,7 +61,7 @@ export function SettingsPanel({
           </div>
 
           <div className="form-group">
-            <label htmlFor="timeout">超时时间 (Timeout - 秒)</label>
+            <label htmlFor="timeout">超时时间 (--timeout，秒)</label>
             <input
               id="timeout"
               type="number"
@@ -76,7 +76,7 @@ export function SettingsPanel({
           </div>
 
           <div className="form-group">
-            <label htmlFor="segmentRetries">分片重试次数 (Retries)</label>
+            <label htmlFor="segmentRetries">分片重试次数 (--segment-retries)</label>
             <input
               id="segmentRetries"
               type="number"
@@ -85,6 +85,21 @@ export function SettingsPanel({
               value={settings.segmentRetries ?? 5}
               onChange={(e) =>
                 onUpdate({ segmentRetries: parseInt(e.target.value, 10) })
+              }
+              className="settings-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="manifestRetries">Manifest重试次数 (--manifest-retries)</label>
+            <input
+              id="manifestRetries"
+              type="number"
+              min="0"
+              max="20"
+              value={settings.manifestRetries ?? 3}
+              onChange={(e) =>
+                onUpdate({ manifestRetries: parseInt(e.target.value, 10) })
               }
               className="settings-input"
             />

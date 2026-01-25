@@ -28,6 +28,10 @@ export function generateShioriCommand(
     command += ` --segment-retries ${settings.segmentRetries}`
   }
 
+  if (settings.manifestRetries && settings.manifestRetries !== 3) {
+    command += ` --manifest-retries ${settings.manifestRetries}`
+  }
+
   if (settings.noMerge) {
     command += ` --no-merge`
   }

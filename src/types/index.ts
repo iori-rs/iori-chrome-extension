@@ -23,6 +23,7 @@ export interface UserSettings {
   concurrency?: number
   timeout?: number
   segmentRetries?: number
+  manifestRetries?: number
   inMemoryCache?: boolean
   noMerge?: boolean
   userAgent?: string
