@@ -3,6 +3,10 @@ import type { StreamMetadata } from "~src/types"
 export interface PluginExecuteResult {
   metadata: StreamMetadata
   rewrittenUrl?: string
+  /**
+   * If true, the stream will be ignored and not saved (filtered out)
+   */
+  ignore?: boolean
 }
 
 export type PluginOptionType = "string" | "boolean"
@@ -43,6 +47,11 @@ export interface IoriPlugin {
    * Check if this plugin should run for the current page URL
    */
   match: (pageUrl: string) => boolean
+  /**
+   * Optional filter to accept/reject specific stream URLs.
+   * If provided, only streams matching the filter will be processed.
+   */
+  filter?: RegExp | ((streamUrl: string) => boolean)
   /**
    * Process the stream URL and extract metadata from the current page content
    * This runs in the content script context (DOM access available)

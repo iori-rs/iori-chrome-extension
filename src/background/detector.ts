@@ -42,6 +42,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
       tryFetchMetadata().then((result) => {
         if (result) {
+          if (result.ignore) return
           saveMediaStream(tabId, result.rewrittenUrl || url, result.metadata)
         } else {
           saveMediaStream(tabId, url, undefined)

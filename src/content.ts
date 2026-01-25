@@ -17,6 +17,24 @@ async function executePlugin(streamUrl?: string): Promise<PluginExecuteResult> {
   if (plugin) {
     try {
       console.log(`[IORI] Running plugin: ${plugin.name}`)
+
+      if (streamUrl && plugin.filter) {
+        let isMatch = false
+        if (plugin.filter instanceof RegExp) {
+          isMatch = plugin.filter.test(streamUrl)
+        } else if (typeof plugin.filter === "function") {
+          isMatch = plugin.filter(streamUrl)
+        }
+
+        if (!isMatch) {
+          console.log(`[IORI] Stream filtered out by plugin: ${plugin.name}`)
+          return {
+            metadata: { title: document.title },
+            ignore: true
+          }
+        }
+      }
+
       return await plugin.process(streamUrl)
     } catch (e) {
       console.error("[IORI] Plugin execution failed:", e)
@@ -52,6 +70,8 @@ window.addEventListener("message", async (event) => {
     console.log("[IORI] Content script received HLS URL:", data.url)
 
     const result = await executePlugin(data.url)
+
+    if (result.ignore) return
 
     const msg: IoriRuntimeMessage = {
       type: "SAVE_MEDIA_STREAM",

@@ -10,6 +10,10 @@ export class OpenrecPlugin implements IoriPlugin {
     return pageUrl.includes("openrec.tv")
   }
 
+  filter?: RegExp | ((streamUrl: string) => boolean) = (streamUrl: string) => {
+    return !streamUrl.includes(":abr")
+  }
+
   async process(streamUrl?: string): Promise<PluginExecuteResult> {
     const metadata: StreamMetadata = {
       headers: {
