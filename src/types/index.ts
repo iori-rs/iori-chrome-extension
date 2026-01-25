@@ -26,6 +26,7 @@ export interface UserSettings {
   inMemoryCache?: boolean
   noMerge?: boolean
   userAgent?: string
+  streamSortOrder?: "asc" | "desc"
 }
 
 // --- Message Types ---

@@ -28,6 +28,22 @@ export function SettingsPanel({
 
       <div className="settings-content">
         <div className="settings-section">
+          <h4 className="section-title">扩展设置</h4>
+          <div className="form-group">
+            <label htmlFor="streamSortOrder">媒体流列表排序</label>
+            <select
+              id="streamSortOrder"
+              value={settings.streamSortOrder ?? "desc"}
+              onChange={(e) =>
+                onUpdate({ streamSortOrder: e.target.value as "asc" | "desc" })
+              }
+              className="settings-input">
+              <option value="desc">时间倒序 (最新在前)</option>
+              <option value="asc">时间正序 (最旧在前)</option>
+            </select>
+          </div>
+        </div>
+        <div className="settings-section">
           <h4 className="section-title">下载配置</h4>
           <div className="form-group">
             <label htmlFor="concurrency">并发数 (Concurrency)</label>

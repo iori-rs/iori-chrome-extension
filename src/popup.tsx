@@ -13,6 +13,7 @@ import "./popup.css"
 function IndexPopup() {
   const { streams, loading: streamsLoading, clear, currentTabUrl } = useMediaStreams()
   const { settings, loading: settingsLoading, updateSettings } = useSettings()
+  const sortedStreams = (settings.streamSortOrder ?? "desc") === "desc" ? [...streams].reverse() : streams
   const [view, setView] = useState<"list" | "settings">("list")
 
   if (settingsLoading) {
@@ -45,7 +46,7 @@ function IndexPopup() {
       ) : (
         <>
           <ActionPanel count={streams.length} onClear={clear} />
-          <StreamList streams={streams} settings={settings} pageUrl={currentTabUrl} />
+          <StreamList streams={sortedStreams} settings={settings} pageUrl={currentTabUrl} />
         </>
       )}
     </div>

@@ -8,7 +8,6 @@ export const useMediaStreams = () => {
   const [currentTabId, setCurrentTabId] = useState<number | null>(null)
   const [currentTabUrl, setCurrentTabUrl] = useState<string>("")
 
-  const reversedStreams = [...streams].reverse()
 
   const loadStreams = useCallback(async () => {
     setLoading(true)
@@ -76,7 +75,7 @@ export const useMediaStreams = () => {
   }, [currentTabId])
 
   return {
-    streams: reversedStreams,
+    streams,
     loading,
     currentTabId,
     currentTabUrl,
